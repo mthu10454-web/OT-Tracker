@@ -1,13 +1,13 @@
 {
-  "name": "OT & Attendance Tracker",
-  "short_name": "OT Tracker",
-  "id": "com.oakker.ottracker",
-  "description": "Simple and fast daily attendance and overtime tracker for effortless work hour logging.",
-  "start_url": "./index.html",
-  "scope": "./",
-  "display": "standalone",
-  "orientation": "any",
   "background_color": "#ffffff",
-  "theme_color": "#2563eb",
-  "dir": "ltr"
+  "dir": "ltr",
+  "display": "standalone",
+  "name": "OT &amp; Attendance Tracker",
+  "orientation": "any",
+  "scope": "/",
+  "short_name": "OT Tracker",
+  "start_url": "/",
+  "theme_color": "#ffffff",
+  "id": "com.oakker.ottracker",
+  "description": "Simple and fast daily attendance and overtime tracker for effortless work hour logging."
 }
