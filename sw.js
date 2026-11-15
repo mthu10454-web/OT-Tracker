@@ -1,8 +1,10 @@
-const CACHE_NAME = 'ot-tracker-v3';
+const CACHE_NAME = 'ot-tracker-v2';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -33,3 +35,4 @@ self.addEventListener('fetch', (event) => {
     )
   );
 });
+
