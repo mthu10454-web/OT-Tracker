@@ -20,7 +20,54 @@
     <style>
         * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
         body { background-color: #f0f2f5; margin: 0; padding: 15px; display: flex; justify-content: center; }
-        .app-card { background: white; width: 100%; max-width: 480px; border-radius: 16px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); }
+        .app-card {
+            position: relative;
+            background: white;
+            width: 100%;
+            max-width: 480px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+        }
+
+        /* Top-Right Language Selector */
+        .lang-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 6px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+        .lang-label {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+        }
+        .lang-switcher {
+            display: inline-flex;
+            background: #f1f5f9;
+            padding: 2px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: #475569;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .lang-btn.active {
+            background: #2563eb;
+            color: #ffffff;
+            box-shadow: 0 1px 3px rgba(37, 99, 235, 0.25);
+        }
+
         .header { text-align: center; margin-bottom: 20px; }
         .header h2 { margin: 0 0 4px 0; color: #1e293b; font-size: 22px; }
         .header p { margin: 0; color: #64748b; font-size: 13px; font-weight: 500; }
@@ -151,6 +198,15 @@
 <body>
 
     <div class="app-card">
+        <!-- Top-Right Language Selector -->
+        <div class="lang-bar">
+            <span class="lang-label" id="langSelectLabel">ဘာသာစကားရွေးရန်</span>
+            <div class="lang-switcher" role="group" aria-label="Language switcher">
+                <button type="button" class="lang-btn active" id="btnLangMy" onclick="setLanguage('my')">မြန်မာ</button>
+                <button type="button" class="lang-btn" id="btnLangEn" onclick="setLanguage('en')">English</button>
+            </div>
+        </div>
+
         <div class="header">
             <h2>OAKKER KYAW</h2>
             <p id="currentDateDisplay">ယနေ့ရက်စွဲ: -</p>
@@ -158,71 +214,71 @@
 
         <button id="installAppBtn" class="btn-install">📲 App အဖြစ် Install လုပ်မည်</button>
         
-        <button class="btn-main" onclick="logAttendance(1, 0)">✓ ပုံမှန်အလုပ်ဆင်းရက် (၁ ရက်)</button>
+        <button class="btn-main" id="btnMainLog" onclick="logAttendance(1, 0)">✓ ပုံမှန်အလုပ်ဆင်းရက် (၁ ရက်)</button>
         
         <div class="section-title">
-            <span>+ OT အချိန် ရွေးချယ်ရန်</span>
+            <span id="otSectionTitle">+ OT အချိန် ရွေးချယ်ရန်</span>
         </div>
         
         <div class="grid-ot">
-            <button class="btn-ot" onclick="logAttendance(0, 1)">+ 1 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 1.5)">+ 1 နာရီခွဲ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 2)">+ 2 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 2.5)">+ 2 နာရီခွဲ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 3)">+ 3 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 3.5)">+ 3 နာရီခွဲ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 4)">+ 4 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 4.5)">+ 4 နာရီခွဲ</button>
-            <button class="btn-ot span-2" onclick="logAttendance(0, 5)">+ 5 နာရီ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 1)" data-ot="1">+ 1 နာရီ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 1.5)" data-ot="1.5">+ 1 နာရီခွဲ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 2)" data-ot="2">+ 2 နာရီ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 2.5)" data-ot="2.5">+ 2 နာရီခွဲ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 3)" data-ot="3">+ 3 နာရီ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 3.5)" data-ot="3.5">+ 3 နာရီခွဲ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 4)" data-ot="4">+ 4 နာရီ</button>
+            <button class="btn-ot" onclick="logAttendance(0, 4.5)" data-ot="4.5">+ 4 နာရီခွဲ</button>
+            <button class="btn-ot span-2" onclick="logAttendance(0, 5)" data-ot="5">+ 5 နာရီ</button>
         </div>
 
         <div class="summary-box">
             <div class="section-title" id="monthTitle" style="margin-top: 0;">ဒီလ စုစုပေါင်း စာရင်း</div>
             <div class="summary-row">
-                <span class="summary-label">အလုပ်ဆင်းရက်</span>
+                <span class="summary-label" id="labelTotalDays">အလုပ်ဆင်းရက်</span>
                 <span class="summary-val" id="totalDays">0 ရက်</span>
             </div>
             <div class="summary-row">
-                <span class="summary-label">OT စုစုပေါင်း</span>
+                <span class="summary-label" id="labelTotalOt">OT စုစုပေါင်း</span>
                 <span class="summary-val" id="totalOt">0 နာရီ</span>
             </div>
         </div>
 
         <div class="section-title">
-            <span>ရက်အလိုက် မှတ်တမ်းများ</span>
-            <button type="button" class="btn-add-past" onclick="openPastModal()">+ ရက်ဟောင်းထည့်မည်</button>
+            <span id="historySectionTitle">ရက်အလိုက် မှတ်တမ်းများ</span>
+            <button type="button" class="btn-add-past" id="btnAddPast" onclick="openPastModal()">+ ရက်ဟောင်းထည့်မည်</button>
         </div>
         <div class="history-box" id="logHistory">
             မှတ်တမ်း မရှိသေးပါ။
         </div>
         
-        <button class="btn-reset" onclick="resetData()">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
+        <button class="btn-reset" id="btnReset" onclick="resetData()">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
     </div>
 
     <!-- Past Date Modal -->
     <div class="modal-overlay" id="pastModal">
         <div class="modal-card">
-            <h3 class="modal-title">ရက်ဟောင်း မှတ်တမ်းထည့်ရန်</h3>
-            <p class="modal-subtitle">ပြီးခဲ့သည့် ရက်စွဲအလိုက် အလုပ်ဆင်းရက်နှင့် OT ထည့်သွင်းပါ</p>
+            <h3 class="modal-title" id="pastModalTitle">ရက်ဟောင်း မှတ်တမ်းထည့်ရန်</h3>
+            <p class="modal-subtitle" id="pastModalSubtitle">ပြီးခဲ့သည့် ရက်စွဲအလိုက် အလုပ်ဆင်းရက်နှင့် OT ထည့်သွင်းပါ</p>
 
             <div class="form-group">
-                <label for="pastDateInput">ရက်စွဲ ရွေးချယ်ရန်</label>
+                <label for="pastDateInput" id="pastDateLabel">ရက်စွဲ ရွေးချယ်ရန်</label>
                 <input type="date" id="pastDateInput">
             </div>
 
             <div class="form-group">
-                <label for="pastDayInput">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
+                <label for="pastDayInput" id="pastDayLabel">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
                 <input type="number" id="pastDayInput" step="0.5" min="0" value="1">
             </div>
 
             <div class="form-group">
-                <label for="pastOtInput">OT နာရီ (ဥပမာ - 3, 1.5, 0)</label>
+                <label for="pastOtInput" id="pastOtLabel">OT နာရီ (ဥပမာ - 3, 1.5, 0)</label>
                 <input type="number" id="pastOtInput" step="0.5" min="0" value="0">
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="modal-btn btn-cancel" onclick="closePastModal()">မလုပ်တော့</button>
-                <button type="button" class="modal-btn btn-save" onclick="savePastLog()">ထည့်သွင်းမည်</button>
+                <button type="button" class="modal-btn btn-cancel" id="pastCancelBtn" onclick="closePastModal()">မလုပ်တော့</button>
+                <button type="button" class="modal-btn btn-save" id="pastSaveBtn" onclick="savePastLog()">ထည့်သွင်းမည်</button>
             </div>
         </div>
     </div>
@@ -230,242 +286,161 @@
     <!-- Edit Modal -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-card">
-            <h3 class="modal-title">မှတ်တမ်း ပြင်ဆင်ရန်</h3>
+            <h3 class="modal-title" id="editModalTitle">မှတ်တမ်း ပြင်ဆင်ရန်</h3>
             <p class="modal-subtitle" id="editDateLabel">ရက်စွဲ: -</p>
             
             <div class="form-group">
-                <label for="editDayInput">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
+                <label for="editDayInput" id="editDayLabel">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
                 <input type="number" id="editDayInput" step="0.5" min="0">
             </div>
             
             <div class="form-group">
-                <label for="editOtInput">OT နာရီ (ဥပမာ - 3, 1.5, 0)</label>
+                <label for="editOtInput" id="editOtLabel">OT နာရီ (ဥပမာ - 3, 1.5, 0)</label>
                 <input type="number" id="editOtInput" step="0.5" min="0">
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="modal-btn btn-delete-row" onclick="deleteLogItem()">ဖျက်မည်</button>
-                <button type="button" class="modal-btn btn-cancel" onclick="closeEditModal()">မလုပ်တော့</button>
-                <button type="button" class="modal-btn btn-save" onclick="saveEditLog()">သိမ်းမည်</button>
+                <button type="button" class="modal-btn btn-delete-row" id="editDeleteBtn" onclick="deleteLogItem()">ဖျက်မည်</button>
+                <button type="button" class="modal-btn btn-cancel" id="editCancelBtn" onclick="closeEditModal()">မလုပ်တော့</button>
+                <button type="button" class="modal-btn btn-save" id="editSaveBtn" onclick="saveEditLog()">သိမ်းမည်</button>
             </div>
         </div>
     </div>
 
     <script>
+        const translations = {
+            my: {
+                langLabel: 'ဘာသာစကားရွေးရန်',
+                todayPrefix: 'ယနေ့ရက်စွဲ: ',
+                installBtn: '📲 App အဖြစ် Install လုပ်မည်',
+                mainLog: '✓ ပုံမှန်အလုပ်ဆင်းရက် (၁ ရက်)',
+                otSection: '+ OT အချိန် ရွေးချယ်ရန်',
+                otButtons: {
+                    '1': '+ 1 နာရီ',
+                    '1.5': '+ 1 နာရီခွဲ',
+                    '2': '+ 2 နာရီ',
+                    '2.5': '+ 2 နာရီခွဲ',
+                    '3': '+ 3 နာရီ',
+                    '3.5': '+ 3 နာရီခွဲ',
+                    '4': '+ 4 နာရီ',
+                    '4.5': '+ 4 နာရီခွဲ',
+                    '5': '+ 5 နာရီ'
+                },
+                monthTitle: (y, m) => `${y} ခုနှစ်၊ ${m} လပိုင်း စာရင်း`,
+                totalDaysLabel: 'အလုပ်ဆင်းရက်',
+                totalOtLabel: 'OT စုစုပေါင်း',
+                dayUnit: 'ရက်',
+                hourUnit: 'နာရီ',
+                historySection: 'ရက်အလိုက် မှတ်တမ်းများ',
+                addPastBtn: '+ ရက်ဟောင်းထည့်မည်',
+                noLogs: 'မှတ်တမ်း မရှိသေးပါ။',
+                historyItem: (date, day, ot) => `📅 <b>${date}</b> — အလုပ်: ${day} ရက် | OT: ${ot} နာရီ`,
+                editTitleAttr: 'ပြင်ဆင်ရန်',
+                resetBtn: 'စာရင်းအားလုံး ဖျက်မည် (Reset)',
+                pastModalTitle: 'ရက်ဟောင်း မှတ်တမ်းထည့်ရန်',
+                pastModalSubtitle: 'ပြီးခဲ့သည့် ရက်စွဲအလိုက် အလုပ်ဆင်းရက်နှင့် OT ထည့်သွင်းပါ',
+                pastDateLabel: 'ရက်စွဲ ရွေးချယ်ရန်',
+                pastDayLabel: 'အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)',
+                pastOtLabel: 'OT နာရီ (ဥပမာ - 3, 1.5, 0)',
+                cancelBtn: 'မလုပ်တော့',
+                pastSaveBtn: 'ထည့်သွင်းမည်',
+                editModalTitle: 'မှတ်တမ်း ပြင်ဆင်ရန်',
+                editDatePrefix: 'ရက်စွဲ: ',
+                editDayLabel: 'အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)',
+                editOtLabel: 'OT နာရီ (ဥပမာ - 3, 1.5, 0)',
+                deleteBtn: 'ဖျက်မည်',
+                saveBtn: 'သိမ်းမည်',
+                alertSelectDate: 'ကျေးဇူးပြု၍ ရက်စွဲ ရွေးချယ်ပါ။',
+                confirmOverwrite: (date) => `${date} အတွက် မှတ်တမ်းရှိပြီးသားဖြစ်ပါသည်။ အသစ်ဖြင့် အစားထိုးသိမ်းမလား?\n(OK = အစားထိုးမည် / Cancel = ပေါင်းထည့်မည်)`,
+                confirmDeleteItem: 'ဒီရက်ရဲ့ မှတ်တမ်းကို ဖျက်မှာ သေချာပါသလား?',
+                confirmResetAll: 'ယခုလ စာရင်းအားလုံးကို ဖျက်မှာ သေချာပါသလား?'
+            },
+            en: {
+                langLabel: 'Select Language',
+                todayPrefix: 'Today: ',
+                installBtn: '📲 Install App',
+                mainLog: '✓ Regular Workday (1 Day)',
+                otSection: '+ Select OT Hours',
+                otButtons: {
+                    '1': '+ 1 hr',
+                    '1.5': '+ 1.5 hrs',
+                    '2': '+ 2 hrs',
+                    '2.5': '+ 2.5 hrs',
+                    '3': '+ 3 hrs',
+                    '3.5': '+ 3.5 hrs',
+                    '4': '+ 4 hrs',
+                    '4.5': '+ 4.5 hrs',
+                    '5': '+ 5 hrs'
+                },
+                monthTitle: (y, m) => `${y}-${String(m).padStart(2, '0')} Summary`,
+                totalDaysLabel: 'Workdays',
+                totalOtLabel: 'Total OT',
+                dayUnit: 'days',
+                hourUnit: 'hrs',
+                historySection: 'Daily Logs',
+                addPastBtn: '+ Add Past Date',
+                noLogs: 'No records yet.',
+                historyItem: (date, day, ot) => `📅 <b>${date}</b> — Work: ${day} d | OT: ${ot} h`,
+                editTitleAttr: 'Edit',
+                resetBtn: 'Reset All Records',
+                pastModalTitle: 'Add Past Date Record',
+                pastModalSubtitle: 'Enter workdays and OT hours for a past date',
+                pastDateLabel: 'Select Date',
+                pastDayLabel: 'Workdays (e.g., 1, 0.5, 0)',
+                pastOtLabel: 'OT Hours (e.g., 3, 1.5, 0)',
+                cancelBtn: 'Cancel',
+                pastSaveBtn: 'Add Record',
+                editModalTitle: 'Edit Record',
+                editDatePrefix: 'Date: ',
+                editDayLabel: 'Workdays (e.g., 1, 0.5, 0)',
+                editOtLabel: 'OT Hours (e.g., 3, 1.5, 0)',
+                deleteBtn: 'Delete',
+                saveBtn: 'Save',
+                alertSelectDate: 'Please select a date.',
+                confirmOverwrite: (date) => `A record already exists for ${date}. Overwrite with new values?\n(OK = Overwrite / Cancel = Add to existing)`,
+                confirmDeleteItem: 'Are you sure you want to delete this day’s record?',
+                confirmResetAll: 'Are you sure you want to delete all records for this month?'
+            }
+        };
+
+        let currentLang = localStorage.getItem('appLang') || 'my';
+
         const now = new Date();
         const year = now.getFullYear();
         const month = now.getMonth() + 1;
         const todayStr = year + '-' + String(month).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
-        
-        document.getElementById('currentDateDisplay').innerText = `ယနေ့ရက်စွဲ: ${todayStr}`;
-        document.getElementById('monthTitle').innerText = `${year} ခုနှစ်၊ ${month} လပိုင်း စာရင်း`;
 
         let storageKey = 'historyLogs_' + year + '_' + month;
         let historyLogs = JSON.parse(localStorage.getItem(storageKey)) || [];
         let editingIndex = null;
 
-        function sortLogsByDateDesc() {
-            historyLogs.sort(function(a, b) {
-                return b.date.localeCompare(a.date);
+        function applyLanguageUI() {
+            const t = translations[currentLang];
+            document.documentElement.lang = currentLang;
+
+            document.getElementById('btnLangMy').classList.toggle('active', currentLang === 'my');
+            document.getElementById('btnLangEn').classList.toggle('active', currentLang === 'en');
+
+            document.getElementById('langSelectLabel').innerText = t.langLabel;
+            document.getElementById('currentDateDisplay').innerText = `${t.todayPrefix}${todayStr}`;
+            document.getElementById('installAppBtn').innerText = t.installBtn;
+            document.getElementById('btnMainLog').innerText = t.mainLog;
+            document.getElementById('otSectionTitle').innerText = t.otSection;
+
+            document.querySelectorAll('.btn-ot[data-ot]').forEach(btn => {
+                const key = btn.getAttribute('data-ot');
+                if (t.otButtons[key]) {
+                    btn.innerText = t.otButtons[key];
+                }
             });
-        }
 
-        function calculateTotals() {
-            let d = 0;
-            let o = 0;
-            historyLogs.forEach(function(log) {
-                d += Number(log.day) || 0;
-                o += Number(log.ot) || 0;
-            });
-            return { d: d, o: o };
-        }
+            document.getElementById('monthTitle').innerText = t.monthTitle(year, month);
+            document.getElementById('labelTotalDays').innerText = t.totalDaysLabel;
+            document.getElementById('labelTotalOt').innerText = t.totalOtLabel;
+            document.getElementById('historySectionTitle').innerText = t.historySection;
+            document.getElementById('btnAddPast').innerText = t.addPastBtn;
+            document.getElementById('btnReset').innerText = t.resetBtn;
 
-        function updateDisplay() {
-            let totals = calculateTotals();
-            document.getElementById('totalDays').innerText = totals.d + ' ရက်';
-            document.getElementById('totalOt').innerText = totals.o + ' နာရီ';
-
-            const historyDiv = document.getElementById('logHistory');
-            if (historyLogs.length === 0) {
-                historyDiv.innerHTML = '<div style="text-align:center; padding: 10px;">မှတ်တမ်း မရှိသေးပါ။</div>';
-            } else {
-                let htmlContent = '';
-                for (let i = 0; i < historyLogs.length; i++) {
-                    let log = historyLogs[i];
-                    htmlContent += `
-                        <div class="history-item">
-                            <span class="history-text">📅 <b>${log.date}</b> — အလုပ်: ${log.day} ရက် | OT: ${log.ot} နာရီ</span>
-                            <button type="button" class="btn-edit" onclick="openEditModal(${i})" title="ပြင်ဆင်ရန်">✏️</button>
-                        </div>
-                    `;
-                }
-                historyDiv.innerHTML = htmlContent;
-            }
-        }
-        updateDisplay();
-
-        function upsertAttendance(targetDate, addDay, addOt, isOverwrite) {
-            let existingLog = null;
-            for (let i = 0; i < historyLogs.length; i++) {
-                if (historyLogs[i].date === targetDate) {
-                    existingLog = historyLogs[i];
-                    break;
-                }
-            }
-
-            if (existingLog) {
-                if (isOverwrite) {
-                    existingLog.day = Number(addDay) || 0;
-                    existingLog.ot = Number(addOt) || 0;
-                } else {
-                    if (addDay > 0) {
-                        existingLog.day = (Number(existingLog.day) || 0) + addDay;
-                    }
-                    if (addOt > 0) {
-                        existingLog.ot = (Number(existingLog.ot) || 0) + addOt;
-                    }
-                }
-            } else {
-                historyLogs.push({
-                    date: targetDate,
-                    day: Number(addDay) || 0,
-                    ot: Number(addOt) || 0
-                });
-            }
-
-            sortLogsByDateDesc();
-            localStorage.setItem(storageKey, JSON.stringify(historyLogs));
-            updateDisplay();
-        }
-
-        function logAttendance(addDay, addOt) {
-            upsertAttendance(todayStr, addDay, addOt, false);
-        }
-
-        /* Past Date Modal Functions */
-        function openPastModal() {
-            const monthStart = year + '-' + String(month).padStart(2, '0') + '-01';
-            const dateInput = document.getElementById('pastDateInput');
-            dateInput.min = monthStart;
-            dateInput.max = todayStr;
-            dateInput.value = todayStr;
-            document.getElementById('pastDayInput').value = 1;
-            document.getElementById('pastOtInput').value = 0;
-            document.getElementById('pastModal').classList.add('active');
-        }
-
-        function closePastModal() {
-            document.getElementById('pastModal').classList.remove('active');
-        }
-
-        function savePastLog() {
-            const selectedDate = document.getElementById('pastDateInput').value;
-            if (!selectedDate) {
-                alert('ကျေးဇူးပြု၍ ရက်စွဲ ရွေးချယ်ပါ။');
-                return;
-            }
-            const dayVal = parseFloat(document.getElementById('pastDayInput').value);
-            const otVal = parseFloat(document.getElementById('pastOtInput').value);
-
-            const cleanDay = isNaN(dayVal) ? 0 : dayVal;
-            const cleanOt = isNaN(otVal) ? 0 : otVal;
-
-            const hasExisting = historyLogs.some(item => item.date === selectedDate);
-            if (hasExisting) {
-                const replaceConfirm = confirm(`${selectedDate} အတွက် မှတ်တမ်းရှိပြီးသားဖြစ်ပါသည်။ အသစ်ဖြင့် အစားထိုးသိမ်းမလား?\n(OK = အစားထိုးမည် / Cancel = ပေါင်းထည့်မည်)`);
-                upsertAttendance(selectedDate, cleanDay, cleanOt, replaceConfirm);
-            } else {
-                upsertAttendance(selectedDate, cleanDay, cleanOt, true);
-            }
-
-            closePastModal();
-        }
-
-        /* Edit Modal Functions */
-        function openEditModal(index) {
-            editingIndex = index;
-            const log = historyLogs[index];
-            document.getElementById('editDateLabel').innerText = `ရက်စွဲ: ${log.date}`;
-            document.getElementById('editDayInput').value = log.day;
-            document.getElementById('editOtInput').value = log.ot;
-            document.getElementById('editModal').classList.add('active');
-        }
-
-        function closeEditModal() {
-            editingIndex = null;
-            document.getElementById('editModal').classList.remove('active');
-        }
-
-        function saveEditLog() {
-            if (editingIndex === null) return;
-            const newDay = parseFloat(document.getElementById('editDayInput').value);
-            const newOt = parseFloat(document.getElementById('editOtInput').value);
-
-            historyLogs[editingIndex].day = isNaN(newDay) ? 0 : newDay;
-            historyLogs[editingIndex].ot = isNaN(newOt) ? 0 : newOt;
-
-            sortLogsByDateDesc();
-            localStorage.setItem(storageKey, JSON.stringify(historyLogs));
-            updateDisplay();
-            closeEditModal();
-        }
-
-        function deleteLogItem() {
-            if (editingIndex === null) return;
-            if (confirm("ဒီရက်ရဲ့ မှတ်တမ်းကို ဖျက်မှာ သေချာပါသလား?")) {
-                historyLogs.splice(editingIndex, 1);
-                localStorage.setItem(storageKey, JSON.stringify(historyLogs));
-                updateDisplay();
-                closeEditModal();
-            }
-        }
-
-        function resetData() {
-            if (confirm("ယခုလ စာရင်းအားလုံးကို ဖျက်မှာ သေချာပါသလား?")) {
-                localStorage.removeItem(storageKey);
-                historyLogs = [];
-                updateDisplay();
-            }
-        }
-
-        // Close modal when clicking outside card
-        document.getElementById('editModal').addEventListener('click', function(e) {
-            if (e.target === this) closeEditModal();
-        });
-        document.getElementById('pastModal').addEventListener('click', function(e) {
-            if (e.target === this) closePastModal();
-        });
-
-        // In-app Install Prompt
-        let deferredPrompt = null;
-        const installAppBtn = document.getElementById('installAppBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installAppBtn.style.display = 'block';
-        });
-
-        installAppBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-            installAppBtn.style.display = 'none';
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installAppBtn.style.display = 'none';
-            deferredPrompt = null;
-        });
-    </script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js');
-        });
-      }
-    </script>
-
-</body>
-</html>
+            // Past Modal
+            document.getElementById('pastModalTitle').innerText = t.pastModalTitle;
+         
