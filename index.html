@@ -10,9 +10,7 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K7NPT2RY02"></script>
     <script>
-      window.dataLayer = window.dataLayer |
-
-| [];
+      window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
@@ -95,28 +93,10 @@
             background: #2563eb;
             color: white;
         }
-
-        .backup-row {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 16px;
-        }
-        .btn-backup {
-            padding: 10px;
-            background: #f8fafc;
-            color: #334155;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .btn-backup:active { background: #e2e8f0; }
         
-        .btn-reset { width: 100%; margin-top: 10px; padding: 12px; background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+        .btn-reset { width: 100%; margin-top: 20px; padding: 12px; background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
-        /* Edit / Add Modal Styles */
+        /* Modal Styles (Edit & Past Date) */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -136,7 +116,8 @@
             padding: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-        .modal-title { font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 14px 0; }
+        .modal-title { font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 4px 0; }
+        .modal-subtitle { font-size: 13px; color: #64748b; margin: 0 0 16px 0; }
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
         .form-group input {
@@ -146,11 +127,6 @@
             border-radius: 10px;
             font-size: 15px;
             color: #0f172a;
-            background: white;
-        }
-        .form-group input:disabled {
-            background: #f1f5f9;
-            color: #64748b;
         }
         .form-group input:focus { outline: none; border-color: #2563eb; }
         .modal-actions {
@@ -214,31 +190,49 @@
 
         <div class="section-title">
             <span>ရက်အလိုက် မှတ်တမ်းများ</span>
-            <button class="btn-add-past" onclick="openAddModal()">+ ရက်ဟောင်းထည့်</button>
+            <button type="button" class="btn-add-past" onclick="openPastModal()">+ ရက်ဟောင်းထည့်မည်</button>
         </div>
         <div class="history-box" id="logHistory">
             မှတ်တမ်း မရှိသေးပါ။
         </div>
-
-        <div class="backup-row">
-            <button class="btn-backup" onclick="exportBackup()">⬇️ Backup သိမ်းမည်</button>
-            <button class="btn-backup" onclick="triggerImport()">⬆️ Backup ပြန်ထည့်မည်</button>
-        </div>
-        <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" onchange="handleImportFile(event)">
         
         <button class="btn-reset" onclick="resetData()">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
     </div>
 
-    <!-- Edit / Add Modal -->
-    <div class="modal-overlay" id="editModal">
+    <!-- Past Date Modal -->
+    <div class="modal-overlay" id="pastModal">
         <div class="modal-card">
-            <h3 class="modal-title" id="modalTitleText">မှတ်တမ်း ပြင်ဆင်ရန်</h3>
-            
+            <h3 class="modal-title">ရက်ဟောင်း မှတ်တမ်းထည့်ရန်</h3>
+            <p class="modal-subtitle">ပြီးခဲ့သည့် ရက်စွဲအလိုက် အလုပ်ဆင်းရက်နှင့် OT ထည့်သွင်းပါ</p>
+
             <div class="form-group">
-                <label for="editDateInput">ရက်စွဲ</label>
-                <input type="date" id="editDateInput">
+                <label for="pastDateInput">ရက်စွဲ ရွေးချယ်ရန်</label>
+                <input type="date" id="pastDateInput">
             </div>
 
+            <div class="form-group">
+                <label for="pastDayInput">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
+                <input type="number" id="pastDayInput" step="0.5" min="0" value="1">
+            </div>
+
+            <div class="form-group">
+                <label for="pastOtInput">OT နာရီ (ဥပမာ - 3, 1.5, 0)</label>
+                <input type="number" id="pastOtInput" step="0.5" min="0" value="0">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="modal-btn btn-cancel" onclick="closePastModal()">မလုပ်တော့</button>
+                <button type="button" class="modal-btn btn-save" onclick="savePastLog()">ထည့်သွင်းမည်</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-card">
+            <h3 class="modal-title">မှတ်တမ်း ပြင်ဆင်ရန်</h3>
+            <p class="modal-subtitle" id="editDateLabel">ရက်စွဲ: -</p>
+            
             <div class="form-group">
                 <label for="editDayInput">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
                 <input type="number" id="editDayInput" step="0.5" min="0">
@@ -250,9 +244,9 @@
             </div>
 
             <div class="modal-actions">
-                <button class="modal-btn btn-delete-row" id="btnDeleteRow" onclick="deleteLogItem()">ဖျက်မည်</button>
-                <button class="modal-btn btn-cancel" onclick="closeEditModal()">မလုပ်တော့</button>
-                <button class="modal-btn btn-save" onclick="saveEditLog()">သိမ်းမည်</button>
+                <button type="button" class="modal-btn btn-delete-row" onclick="deleteLogItem()">ဖျက်မည်</button>
+                <button type="button" class="modal-btn btn-cancel" onclick="closeEditModal()">မလုပ်တော့</button>
+                <button type="button" class="modal-btn btn-save" onclick="saveEditLog()">သိမ်းမည်</button>
             </div>
         </div>
     </div>
@@ -267,21 +261,21 @@
         document.getElementById('monthTitle').innerText = `${year} ခုနှစ်၊ ${month} လပိုင်း စာရင်း`;
 
         let storageKey = 'historyLogs_' + year + '_' + month;
-        let historyLogs = JSON.parse(localStorage.getItem(storageKey)) |
-
-| [];
+        let historyLogs = JSON.parse(localStorage.getItem(storageKey)) || [];
         let editingIndex = null;
+
+        function sortLogsByDateDesc() {
+            historyLogs.sort(function(a, b) {
+                return b.date.localeCompare(a.date);
+            });
+        }
 
         function calculateTotals() {
             let d = 0;
             let o = 0;
             historyLogs.forEach(function(log) {
-                d += Number(log.day) |
-
-| 0;
-                o += Number(log.ot) |
-
-| 0;
+                d += Number(log.day) || 0;
+                o += Number(log.ot) || 0;
             });
             return { d: d, o: o };
         }
@@ -301,7 +295,7 @@
                     htmlContent += `
                         <div class="history-item">
                             <span class="history-text">📅 <b>${log.date}</b> — အလုပ်: ${log.day} ရက် | OT: ${log.ot} နာရီ</span>
-                            <button class="btn-edit" onclick="openEditModal(${i})" title="ပြင်ဆင်ရန်">✏️</button>
+                            <button type="button" class="btn-edit" onclick="openEditModal(${i})" title="ပြင်ဆင်ရန်">✏️</button>
                         </div>
                     `;
                 }
@@ -310,55 +304,90 @@
         }
         updateDisplay();
 
-        function logAttendance(addDay, addOt) {
+        function upsertAttendance(targetDate, addDay, addOt, isOverwrite) {
             let existingLog = null;
             for (let i = 0; i < historyLogs.length; i++) {
-                if (historyLogs[i].date === todayStr) {
+                if (historyLogs[i].date === targetDate) {
                     existingLog = historyLogs[i];
                     break;
                 }
             }
 
             if (existingLog) {
-                if (addDay > 0) {
-                    existingLog.day = (Number(existingLog.day) |
-
-| 0) + addDay;
-                }
-                if (addOt > 0) {
-                    existingLog.ot = (Number(existingLog.ot) |
-
-| 0) + addOt;
+                if (isOverwrite) {
+                    existingLog.day = Number(addDay) || 0;
+                    existingLog.ot = Number(addOt) || 0;
+                } else {
+                    if (addDay > 0) {
+                        existingLog.day = (Number(existingLog.day) || 0) + addDay;
+                    }
+                    if (addOt > 0) {
+                        existingLog.ot = (Number(existingLog.ot) || 0) + addOt;
+                    }
                 }
             } else {
-                historyLogs.unshift({ date: todayStr, day: addDay, ot: addOt });
+                historyLogs.push({
+                    date: targetDate,
+                    day: Number(addDay) || 0,
+                    ot: Number(addOt) || 0
+                });
             }
 
-            historyLogs.sort((a, b) => b.date.localeCompare(a.date));
+            sortLogsByDateDesc();
             localStorage.setItem(storageKey, JSON.stringify(historyLogs));
             updateDisplay();
         }
 
-        function openAddModal() {
-            editingIndex = null;
-            document.getElementById('modalTitleText').innerText = 'ရက်စွဲအလိုက် ထည့်သွင်းရန်';
-            document.getElementById('editDateInput').value = todayStr;
-            document.getElementById('editDateInput').disabled = false;
-            document.getElementById('editDayInput').value = 1;
-            document.getElementById('editOtInput').value = 0;
-            document.getElementById('btnDeleteRow').style.display = 'none';
-            document.getElementById('editModal').classList.add('active');
+        function logAttendance(addDay, addOt) {
+            upsertAttendance(todayStr, addDay, addOt, false);
         }
 
+        /* Past Date Modal Functions */
+        function openPastModal() {
+            const monthStart = year + '-' + String(month).padStart(2, '0') + '-01';
+            const dateInput = document.getElementById('pastDateInput');
+            dateInput.min = monthStart;
+            dateInput.max = todayStr;
+            dateInput.value = todayStr;
+            document.getElementById('pastDayInput').value = 1;
+            document.getElementById('pastOtInput').value = 0;
+            document.getElementById('pastModal').classList.add('active');
+        }
+
+        function closePastModal() {
+            document.getElementById('pastModal').classList.remove('active');
+        }
+
+        function savePastLog() {
+            const selectedDate = document.getElementById('pastDateInput').value;
+            if (!selectedDate) {
+                alert('ကျေးဇူးပြု၍ ရက်စွဲ ရွေးချယ်ပါ။');
+                return;
+            }
+            const dayVal = parseFloat(document.getElementById('pastDayInput').value);
+            const otVal = parseFloat(document.getElementById('pastOtInput').value);
+
+            const cleanDay = isNaN(dayVal) ? 0 : dayVal;
+            const cleanOt = isNaN(otVal) ? 0 : otVal;
+
+            const hasExisting = historyLogs.some(item => item.date === selectedDate);
+            if (hasExisting) {
+                const replaceConfirm = confirm(`${selectedDate} အတွက် မှတ်တမ်းရှိပြီးသားဖြစ်ပါသည်။ အသစ်ဖြင့် အစားထိုးသိမ်းမလား?\n(OK = အစားထိုးမည် / Cancel = ပေါင်းထည့်မည်)`);
+                upsertAttendance(selectedDate, cleanDay, cleanOt, replaceConfirm);
+            } else {
+                upsertAttendance(selectedDate, cleanDay, cleanOt, true);
+            }
+
+            closePastModal();
+        }
+
+        /* Edit Modal Functions */
         function openEditModal(index) {
             editingIndex = index;
             const log = historyLogs[index];
-            document.getElementById('modalTitleText').innerText = 'မှတ်တမ်း ပြင်ဆင်ရန်';
-            document.getElementById('editDateInput').value = log.date;
-            document.getElementById('editDateInput').disabled = true;
+            document.getElementById('editDateLabel').innerText = `ရက်စွဲ: ${log.date}`;
             document.getElementById('editDayInput').value = log.day;
             document.getElementById('editOtInput').value = log.ot;
-            document.getElementById('btnDeleteRow').style.display = 'block';
             document.getElementById('editModal').classList.add('active');
         }
 
@@ -368,58 +397,16 @@
         }
 
         function saveEditLog() {
-            const dateVal = document.getElementById('editDateInput').value;
-            if (!dateVal) {
-                alert('ရက်စွဲ ရွေးချယ်ပေးပါ။');
-                return;
-            }
-
+            if (editingIndex === null) return;
             const newDay = parseFloat(document.getElementById('editDayInput').value);
             const newOt = parseFloat(document.getElementById('editOtInput').value);
-            const safeDay = isNaN(newDay) ? 0 : newDay;
-            const safeOt = isNaN(newOt) ? 0 : newOt;
 
-            if (editingIndex !== null) {
-                historyLogs[editingIndex].day = safeDay;
-                historyLogs[editingIndex].ot = safeOt;
-                localStorage.setItem(storageKey, JSON.stringify(historyLogs));
-                updateDisplay();
-                closeEditModal();
-                return;
-            }
+            historyLogs[editingIndex].day = isNaN(newDay) ? 0 : newDay;
+            historyLogs[editingIndex].ot = isNaN(newOt) ? 0 : newOt;
 
-            const parts = dateVal.split('-');
-            const targetKey = 'historyLogs_' + Number(parts[0]) + '_' + Number(parts[1]);
-            let targetLogs = (targetKey === storageKey)
-                ? historyLogs
-                : (JSON.parse(localStorage.getItem(targetKey)) |
-
-| []);
-
-            let existing = null;
-            for (let i = 0; i < targetLogs.length; i++) {
-                if (targetLogs[i].date === dateVal) {
-                    existing = targetLogs[i];
-                    break;
-                }
-            }
-
-            if (existing) {
-                existing.day = safeDay;
-                existing.ot = safeOt;
-            } else {
-                targetLogs.push({ date: dateVal, day: safeDay, ot: safeOt });
-            }
-
-            targetLogs.sort((a, b) => b.date.localeCompare(a.date));
-            localStorage.setItem(targetKey, JSON.stringify(targetLogs));
-
-            if (targetKey === storageKey) {
-                historyLogs = targetLogs;
-                updateDisplay();
-            } else {
-                alert(Number(parts[0]) + ' ခုနှစ်၊ ' + Number(parts[1]) + ' လပိုင်း စာရင်းထဲသို့ သိမ်းဆည်းပြီးပါပြီ။');
-            }
+            sortLogsByDateDesc();
+            localStorage.setItem(storageKey, JSON.stringify(historyLogs));
+            updateDisplay();
             closeEditModal();
         }
 
@@ -433,65 +420,52 @@
             }
         }
 
-        function exportBackup() {
-            const backupData = {};
-            for (let i = 0; i < localStorage.length; i++) {
-                const k = localStorage.key(i);
-                if (k && k.startsWith('historyLogs_')) {
-                    backupData[k] = JSON.parse(localStorage.getItem(k));
-                }
-            }
-            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'ot-tracker-backup-' + todayStr + '.json';
-            a.click();
-            URL.revokeObjectURL(url);
-        }
-
-        function triggerImport() {
-            document.getElementById('importFileInput').click();
-        }
-
-        function handleImportFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                try {
-                    const imported = JSON.parse(e.target.result);
-                    if (typeof imported !== 'object' |
-
-| imported === null) throw new Error('Invalid');
-                    let count = 0;
-                    Object.keys(imported).forEach((k) => {
-                        if (k.startsWith('historyLogs_') && Array.isArray(imported[k])) {
-                            localStorage.setItem(k, JSON.stringify(imported[k]));
-                            count++;
-                        }
-                    });
-                    if (count === 0) {
-                        alert('OT စာရင်း Backup ဖိုင် မှန်ကန်မှု မရှိပါ။');
-                        return;
-                    }
-                    historyLogs = JSON.parse(localStorage.getItem(storageKey)) |
-
-| [];
-                    updateDisplay();
-                    alert('Backup စာရင်းများ ပြန်လည်ထည့်သွင်းပြီးပါပြီ။');
-                } catch (err) {
-                    alert('ဖိုင်ဖတ်ရာတွင် အမှားရှိနေပါသည်။');
-                }
-            };
-            reader.readAsText(file);
-            event.target.value = '';
-        }
-
         function resetData() {
-            if(confirm("ယခုလ စာရင်းအားလုံးကို ဖျက်မှာ သေချာပါသလား?")) {
+            if (confirm("ယခုလ စာရင်းအားလုံးကို ဖျက်မှာ သေချာပါသလား?")) {
                 localStorage.removeItem(storageKey);
                 historyLogs = [];
                 updateDisplay();
             }
-     
+        }
+
+        // Close modal when clicking outside card
+        document.getElementById('editModal').addEventListener('click', function(e) {
+            if (e.target === this) closeEditModal();
+        });
+        document.getElementById('pastModal').addEventListener('click', function(e) {
+            if (e.target === this) closePastModal();
+        });
+
+        // In-app Install Prompt
+        let deferredPrompt = null;
+        const installAppBtn = document.getElementById('installAppBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installAppBtn.style.display = 'block';
+        });
+
+        installAppBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            deferredPrompt.prompt();
+            await deferredPrompt.userChoice;
+            deferredPrompt = null;
+            installAppBtn.style.display = 'none';
+        });
+
+        window.addEventListener('appinstalled', () => {
+            installAppBtn.style.display = 'none';
+            deferredPrompt = null;
+        });
+    </script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
+    </script>
+
+</body>
+</html>
