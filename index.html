@@ -202,8 +202,8 @@
         <div class="lang-bar">
             <span class="lang-label" id="langSelectLabel">ဘာသာစကားရွေးရန်</span>
             <div class="lang-switcher" role="group" aria-label="Language switcher">
-                <button type="button" class="lang-btn active" id="btnLangMy" onclick="setLanguage('my')">မြန်မာ</button>
-                <button type="button" class="lang-btn" id="btnLangEn" onclick="setLanguage('en')">English</button>
+                <button type="button" class="lang-btn active" id="btnLangMy">မြန်မာ</button>
+                <button type="button" class="lang-btn" id="btnLangEn">English</button>
             </div>
         </div>
 
@@ -214,22 +214,22 @@
 
         <button id="installAppBtn" class="btn-install">📲 App အဖြစ် Install လုပ်မည်</button>
         
-        <button class="btn-main" id="btnMainLog" onclick="logAttendance(1, 0)">✓ ပုံမှန်အလုပ်ဆင်းရက် (၁ ရက်)</button>
+        <button type="button" class="btn-main" id="btnMainLog">✓ ပုံမှန်အလုပ်ဆင်းရက် (၁ ရက်)</button>
         
         <div class="section-title">
             <span id="otSectionTitle">+ OT အချိန် ရွေးချယ်ရန်</span>
         </div>
         
         <div class="grid-ot">
-            <button class="btn-ot" onclick="logAttendance(0, 1)" data-ot="1">+ 1 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 1.5)" data-ot="1.5">+ 1 နာရီခွဲ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 2)" data-ot="2">+ 2 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 2.5)" data-ot="2.5">+ 2 နာရီခွဲ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 3)" data-ot="3">+ 3 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 3.5)" data-ot="3.5">+ 3 နာရီခွဲ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 4)" data-ot="4">+ 4 နာရီ</button>
-            <button class="btn-ot" onclick="logAttendance(0, 4.5)" data-ot="4.5">+ 4 နာရီခွဲ</button>
-            <button class="btn-ot span-2" onclick="logAttendance(0, 5)" data-ot="5">+ 5 နာရီ</button>
+            <button type="button" class="btn-ot" data-ot="1">+ 1 နာရီ</button>
+            <button type="button" class="btn-ot" data-ot="1.5">+ 1 နာရီခွဲ</button>
+            <button type="button" class="btn-ot" data-ot="2">+ 2 နာရီ</button>
+            <button type="button" class="btn-ot" data-ot="2.5">+ 2 နာရီခွဲ</button>
+            <button type="button" class="btn-ot" data-ot="3">+ 3 နာရီ</button>
+            <button type="button" class="btn-ot" data-ot="3.5">+ 3 နာရီခွဲ</button>
+            <button type="button" class="btn-ot" data-ot="4">+ 4 နာရီ</button>
+            <button type="button" class="btn-ot" data-ot="4.5">+ 4 နာရီခွဲ</button>
+            <button type="button" class="btn-ot span-2" data-ot="5">+ 5 နာရီ</button>
         </div>
 
         <div class="summary-box">
@@ -246,13 +246,13 @@
 
         <div class="section-title">
             <span id="historySectionTitle">ရက်အလိုက် မှတ်တမ်းများ</span>
-            <button type="button" class="btn-add-past" id="btnAddPast" onclick="openPastModal()">+ ရက်ဟောင်းထည့်မည်</button>
+            <button type="button" class="btn-add-past" id="btnAddPast">+ ရက်ဟောင်းထည့်မည်</button>
         </div>
         <div class="history-box" id="logHistory">
             မှတ်တမ်း မရှိသေးပါ။
         </div>
         
-        <button class="btn-reset" id="btnReset" onclick="resetData()">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
+        <button type="button" class="btn-reset" id="btnReset">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
     </div>
 
     <!-- Past Date Modal -->
@@ -277,8 +277,8 @@
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="modal-btn btn-cancel" id="pastCancelBtn" onclick="closePastModal()">မလုပ်တော့</button>
-                <button type="button" class="modal-btn btn-save" id="pastSaveBtn" onclick="savePastLog()">ထည့်သွင်းမည်</button>
+                <button type="button" class="modal-btn btn-cancel" id="pastCancelBtn">မလုပ်တော့</button>
+                <button type="button" class="modal-btn btn-save" id="pastSaveBtn">ထည့်သွင်းမည်</button>
             </div>
         </div>
     </div>
@@ -300,9 +300,9 @@
             </div>
 
             <div class="modal-actions">
-                <button type="button" class="modal-btn btn-delete-row" id="editDeleteBtn" onclick="deleteLogItem()">ဖျက်မည်</button>
-                <button type="button" class="modal-btn btn-cancel" id="editCancelBtn" onclick="closeEditModal()">မလုပ်တော့</button>
-                <button type="button" class="modal-btn btn-save" id="editSaveBtn" onclick="saveEditLog()">သိမ်းမည်</button>
+                <button type="button" class="modal-btn btn-delete-row" id="editDeleteBtn">ဖျက်မည်</button>
+                <button type="button" class="modal-btn btn-cancel" id="editCancelBtn">မလုပ်တော့</button>
+                <button type="button" class="modal-btn btn-save" id="editSaveBtn">သိမ်းမည်</button>
             </div>
         </div>
     </div>
@@ -403,6 +403,11 @@
             }
         };
 
+        function setText(id, value) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = value;
+        }
+
         let currentLang = localStorage.getItem('appLang') || 'my';
 
         const now = new Date();
@@ -410,22 +415,24 @@
         const month = now.getMonth() + 1;
         const todayStr = year + '-' + String(month).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
 
-        let storageKey = 'historyLogs_' + year + '_' + month;
+        const storageKey = 'historyLogs_' + year + '_' + month;
         let historyLogs = JSON.parse(localStorage.getItem(storageKey)) || [];
         let editingIndex = null;
 
         function applyLanguageUI() {
-            const t = translations[currentLang];
+            const t = translations[currentLang] || translations.my;
             document.documentElement.lang = currentLang;
 
-            document.getElementById('btnLangMy').classList.toggle('active', currentLang === 'my');
-            document.getElementById('btnLangEn').classList.toggle('active', currentLang === 'en');
+            const btnMy = document.getElementById('btnLangMy');
+            const btnEn = document.getElementById('btnLangEn');
+            if (btnMy) btnMy.classList.toggle('active', currentLang === 'my');
+            if (btnEn) btnEn.classList.toggle('active', currentLang === 'en');
 
-            document.getElementById('langSelectLabel').innerText = t.langLabel;
-            document.getElementById('currentDateDisplay').innerText = `${t.todayPrefix}${todayStr}`;
-            document.getElementById('installAppBtn').innerText = t.installBtn;
-            document.getElementById('btnMainLog').innerText = t.mainLog;
-            document.getElementById('otSectionTitle').innerText = t.otSection;
+            setText('langSelectLabel', t.langLabel);
+            setText('currentDateDisplay', `${t.todayPrefix}${todayStr}`);
+            setText('installAppBtn', t.installBtn);
+            setText('btnMainLog', t.mainLog);
+            setText('otSectionTitle', t.otSection);
 
             document.querySelectorAll('.btn-ot[data-ot]').forEach(btn => {
                 const key = btn.getAttribute('data-ot');
@@ -434,13 +441,23 @@
                 }
             });
 
-            document.getElementById('monthTitle').innerText = t.monthTitle(year, month);
-            document.getElementById('labelTotalDays').innerText = t.totalDaysLabel;
-            document.getElementById('labelTotalOt').innerText = t.totalOtLabel;
-            document.getElementById('historySectionTitle').innerText = t.historySection;
-            document.getElementById('btnAddPast').innerText = t.addPastBtn;
-            document.getElementById('btnReset').innerText = t.resetBtn;
+            setText('monthTitle', t.monthTitle(year, month));
+            setText('labelTotalDays', t.totalDaysLabel);
+            setText('labelTotalOt', t.totalOtLabel);
+            setText('historySectionTitle', t.historySection);
+            setText('btnAddPast', t.addPastBtn);
+            setText('btnReset', t.resetBtn);
 
             // Past Modal
-            document.getElementById('pastModalTitle').innerText = t.pastModalTitle;
-         
+            setText('pastModalTitle', t.pastModalTitle);
+            setText('pastModalSubtitle', t.pastModalSubtitle);
+            setText('pastDateLabel', t.pastDateLabel);
+            setText('pastDayLabel', t.pastDayLabel);
+            setText('pastOtLabel', t.pastOtLabel);
+            setText('pastCancelBtn', t.cancelBtn);
+            setText('pastSaveBtn', t.pastSaveBtn);
+
+            // Edit Modal
+            setText('editModalTitle', t.editModalTitle);
+            setText('editDayLabel', t.editDayLabel);
+      
