@@ -41,11 +41,84 @@
         .summary-label { color: #475569; }
         .summary-val { font-weight: 700; color: #0f172a; }
         
-        .history-box { max-height: 160px; overflow-y: auto; background: #fafafa; border-radius: 10px; padding: 10px; border: 1px solid #f1f5f9; font-size: 13px; color: #64748b; }
-        .history-item { padding: 6px 0; border-bottom: 1px solid #f1f5f9; }
+        .history-box { max-height: 220px; overflow-y: auto; background: #fafafa; border-radius: 10px; padding: 10px; border: 1px solid #f1f5f9; font-size: 13px; color: #64748b; }
+        .history-item {
+            padding: 8px 4px;
+            border-bottom: 1px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
         .history-item:last-child { border-bottom: none; }
+        .history-text { flex: 1; line-height: 1.4; }
+        .btn-edit {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 14px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .btn-edit:active {
+            background: #2563eb;
+            color: white;
+        }
         
         .btn-reset { width: 100%; margin-top: 20px; padding: 12px; background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+        /* Edit Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        .modal-title { font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 4px 0; }
+        .modal-subtitle { font-size: 13px; color: #64748b; margin: 0 0 16px 0; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+        .form-group input {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 15px;
+            color: #0f172a;
+        }
+        .form-group input:focus { outline: none; border-color: #2563eb; }
+        .modal-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 11px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-save { background: #2563eb; color: white; }
+        .btn-cancel { background: #f1f5f9; color: #475569; }
+        .btn-delete-row { background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; }
     </style>
 </head>
 <body>
@@ -94,6 +167,30 @@
         <button class="btn-reset" onclick="resetData()">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
     </div>
 
+    <!-- Edit Modal -->
+    <div class="modal-overlay" id="editModal">
+        <div class="modal-card">
+            <h3 class="modal-title">မှတ်တမ်း ပြင်ဆင်ရန်</h3>
+            <p class="modal-subtitle" id="editDateLabel">ရက်စွဲ: -</p>
+            
+            <div class="form-group">
+                <label for="editDayInput">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
+                <input type="number" id="editDayInput" step="0.5" min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="editOtInput">OT နာရီ (ဥပမာ - 3, 1.5, 0)</label>
+                <input type="number" id="editOtInput" step="0.5" min="0">
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn btn-delete-row" onclick="deleteLogItem()">ဖျက်မည်</button>
+                <button class="modal-btn btn-cancel" onclick="closeEditModal()">မလုပ်တော့</button>
+                <button class="modal-btn btn-save" onclick="saveEditLog()">သိမ်းမည်</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const now = new Date();
         const year = now.getFullYear();
@@ -105,13 +202,14 @@
 
         let storageKey = 'historyLogs_' + year + '_' + month;
         let historyLogs = JSON.parse(localStorage.getItem(storageKey)) || [];
+        let editingIndex = null;
 
         function calculateTotals() {
             let d = 0;
             let o = 0;
             historyLogs.forEach(function(log) {
-                d += log.day;
-                o += log.ot;
+                d += Number(log.day) || 0;
+                o += Number(log.ot) || 0;
             });
             return { d: d, o: o };
         }
@@ -128,7 +226,12 @@
                 let htmlContent = '';
                 for (let i = 0; i < historyLogs.length; i++) {
                     let log = historyLogs[i];
-                    htmlContent += '<div class="history-item">📅 <b>' + log.date + '</b> — အလုပ်: ' + log.day + ' ရက် | OT: ' + log.ot + ' နာရီ</div>';
+                    htmlContent += `
+                        <div class="history-item">
+                            <span class="history-text">📅 <b>${log.date}</b> — အလုပ်: ${log.day} ရက် | OT: ${log.ot} နာရီ</span>
+                            <button class="btn-edit" onclick="openEditModal(${i})" title="ပြင်ဆင်ရန်">✏️</button>
+                        </div>
+                    `;
                 }
                 historyDiv.innerHTML = htmlContent;
             }
@@ -146,10 +249,10 @@
 
             if (existingLog) {
                 if (addDay > 0) {
-                    existingLog.day += addDay;
+                    existingLog.day = (Number(existingLog.day) || 0) + addDay;
                 }
                 if (addOt > 0) {
-                    existingLog.ot += addOt;
+                    existingLog.ot = (Number(existingLog.ot) || 0) + addOt;
                 }
             } else {
                 historyLogs.unshift({ date: todayStr, day: addDay, ot: addOt });
@@ -157,6 +260,43 @@
 
             localStorage.setItem(storageKey, JSON.stringify(historyLogs));
             updateDisplay();
+        }
+
+        function openEditModal(index) {
+            editingIndex = index;
+            const log = historyLogs[index];
+            document.getElementById('editDateLabel').innerText = `ရက်စွဲ: ${log.date}`;
+            document.getElementById('editDayInput').value = log.day;
+            document.getElementById('editOtInput').value = log.ot;
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            editingIndex = null;
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        function saveEditLog() {
+            if (editingIndex === null) return;
+            const newDay = parseFloat(document.getElementById('editDayInput').value);
+            const newOt = parseFloat(document.getElementById('editOtInput').value);
+
+            historyLogs[editingIndex].day = isNaN(newDay) ? 0 : newDay;
+            historyLogs[editingIndex].ot = isNaN(newOt) ? 0 : newOt;
+
+            localStorage.setItem(storageKey, JSON.stringify(historyLogs));
+            updateDisplay();
+            closeEditModal();
+        }
+
+        function deleteLogItem() {
+            if (editingIndex === null) return;
+            if (confirm("ဒီရက်ရဲ့ မှတ်တမ်းကို ဖျက်မှာ သေချာပါသလား?")) {
+                historyLogs.splice(editingIndex, 1);
+                localStorage.setItem(storageKey, JSON.stringify(historyLogs));
+                updateDisplay();
+                closeEditModal();
+            }
         }
 
         function resetData() {
@@ -168,12 +308,13 @@
         }
     </script>
     <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js');
-    });
-  }
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js');
+        });
+      }
     </script>
 
 </body>
 </html>
+
