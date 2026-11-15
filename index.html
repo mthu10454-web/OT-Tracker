@@ -10,7 +10,9 @@
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-K7NPT2RY02"></script>
     <script>
-      window.dataLayer = window.dataLayer || [];
+      window.dataLayer = window.dataLayer |
+
+| [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
 
@@ -44,7 +46,18 @@
         .btn-main { width: 100%; padding: 16px; background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; border-radius: 12px; font-size: 17px; font-weight: 700; box-shadow: 0 4px 10px rgba(16, 185, 129, 0.25); margin-bottom: 20px; cursor: pointer; }
         .btn-main:active { transform: scale(0.98); }
         
-        .section-title { font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; }
+        .section-title { font-size: 14px; font-weight: 700; color: #475569; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .btn-add-past {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .btn-add-past:active { background: #2563eb; color: white; }
         
         .grid-ot { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 25px; }
         .btn-ot { padding: 14px 10px; background: #f8fafc; color: #2563eb; border: 1.5px solid #dbeafe; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
@@ -82,10 +95,28 @@
             background: #2563eb;
             color: white;
         }
-        
-        .btn-reset { width: 100%; margin-top: 20px; padding: 12px; background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
-        /* Edit Modal Styles */
+        .backup-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 16px;
+        }
+        .btn-backup {
+            padding: 10px;
+            background: #f8fafc;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .btn-backup:active { background: #e2e8f0; }
+        
+        .btn-reset { width: 100%; margin-top: 10px; padding: 12px; background: #fff1f2; color: #e11d48; border: 1px solid #fecdd3; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+        /* Edit / Add Modal Styles */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -105,8 +136,7 @@
             padding: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
-        .modal-title { font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 4px 0; }
-        .modal-subtitle { font-size: 13px; color: #64748b; margin: 0 0 16px 0; }
+        .modal-title { font-size: 17px; font-weight: 700; color: #1e293b; margin: 0 0 14px 0; }
         .form-group { margin-bottom: 14px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
         .form-group input {
@@ -116,6 +146,11 @@
             border-radius: 10px;
             font-size: 15px;
             color: #0f172a;
+            background: white;
+        }
+        .form-group input:disabled {
+            background: #f1f5f9;
+            color: #64748b;
         }
         .form-group input:focus { outline: none; border-color: #2563eb; }
         .modal-actions {
@@ -177,20 +212,33 @@
             </div>
         </div>
 
-        <div class="section-title">ရက်အလိုက် မှတ်တမ်းများ</div>
+        <div class="section-title">
+            <span>ရက်အလိုက် မှတ်တမ်းများ</span>
+            <button class="btn-add-past" onclick="openAddModal()">+ ရက်ဟောင်းထည့်</button>
+        </div>
         <div class="history-box" id="logHistory">
             မှတ်တမ်း မရှိသေးပါ။
         </div>
+
+        <div class="backup-row">
+            <button class="btn-backup" onclick="exportBackup()">⬇️ Backup သိမ်းမည်</button>
+            <button class="btn-backup" onclick="triggerImport()">⬆️ Backup ပြန်ထည့်မည်</button>
+        </div>
+        <input type="file" id="importFileInput" accept=".json,application/json" style="display:none;" onchange="handleImportFile(event)">
         
         <button class="btn-reset" onclick="resetData()">စာရင်းအားလုံး ဖျက်မည် (Reset)</button>
     </div>
 
-    <!-- Edit Modal -->
+    <!-- Edit / Add Modal -->
     <div class="modal-overlay" id="editModal">
         <div class="modal-card">
-            <h3 class="modal-title">မှတ်တမ်း ပြင်ဆင်ရန်</h3>
-            <p class="modal-subtitle" id="editDateLabel">ရက်စွဲ: -</p>
+            <h3 class="modal-title" id="modalTitleText">မှတ်တမ်း ပြင်ဆင်ရန်</h3>
             
+            <div class="form-group">
+                <label for="editDateInput">ရက်စွဲ</label>
+                <input type="date" id="editDateInput">
+            </div>
+
             <div class="form-group">
                 <label for="editDayInput">အလုပ်ဆင်းရက် (ဥပမာ - 1, 0.5, 0)</label>
                 <input type="number" id="editDayInput" step="0.5" min="0">
@@ -202,7 +250,7 @@
             </div>
 
             <div class="modal-actions">
-                <button class="modal-btn btn-delete-row" onclick="deleteLogItem()">ဖျက်မည်</button>
+                <button class="modal-btn btn-delete-row" id="btnDeleteRow" onclick="deleteLogItem()">ဖျက်မည်</button>
                 <button class="modal-btn btn-cancel" onclick="closeEditModal()">မလုပ်တော့</button>
                 <button class="modal-btn btn-save" onclick="saveEditLog()">သိမ်းမည်</button>
             </div>
@@ -219,15 +267,21 @@
         document.getElementById('monthTitle').innerText = `${year} ခုနှစ်၊ ${month} လပိုင်း စာရင်း`;
 
         let storageKey = 'historyLogs_' + year + '_' + month;
-        let historyLogs = JSON.parse(localStorage.getItem(storageKey)) || [];
+        let historyLogs = JSON.parse(localStorage.getItem(storageKey)) |
+
+| [];
         let editingIndex = null;
 
         function calculateTotals() {
             let d = 0;
             let o = 0;
             historyLogs.forEach(function(log) {
-                d += Number(log.day) || 0;
-                o += Number(log.ot) || 0;
+                d += Number(log.day) |
+
+| 0;
+                o += Number(log.ot) |
+
+| 0;
             });
             return { d: d, o: o };
         }
@@ -267,25 +321,44 @@
 
             if (existingLog) {
                 if (addDay > 0) {
-                    existingLog.day = (Number(existingLog.day) || 0) + addDay;
+                    existingLog.day = (Number(existingLog.day) |
+
+| 0) + addDay;
                 }
                 if (addOt > 0) {
-                    existingLog.ot = (Number(existingLog.ot) || 0) + addOt;
+                    existingLog.ot = (Number(existingLog.ot) |
+
+| 0) + addOt;
                 }
             } else {
                 historyLogs.unshift({ date: todayStr, day: addDay, ot: addOt });
             }
 
+            historyLogs.sort((a, b) => b.date.localeCompare(a.date));
             localStorage.setItem(storageKey, JSON.stringify(historyLogs));
             updateDisplay();
+        }
+
+        function openAddModal() {
+            editingIndex = null;
+            document.getElementById('modalTitleText').innerText = 'ရက်စွဲအလိုက် ထည့်သွင်းရန်';
+            document.getElementById('editDateInput').value = todayStr;
+            document.getElementById('editDateInput').disabled = false;
+            document.getElementById('editDayInput').value = 1;
+            document.getElementById('editOtInput').value = 0;
+            document.getElementById('btnDeleteRow').style.display = 'none';
+            document.getElementById('editModal').classList.add('active');
         }
 
         function openEditModal(index) {
             editingIndex = index;
             const log = historyLogs[index];
-            document.getElementById('editDateLabel').innerText = `ရက်စွဲ: ${log.date}`;
+            document.getElementById('modalTitleText').innerText = 'မှတ်တမ်း ပြင်ဆင်ရန်';
+            document.getElementById('editDateInput').value = log.date;
+            document.getElementById('editDateInput').disabled = true;
             document.getElementById('editDayInput').value = log.day;
             document.getElementById('editOtInput').value = log.ot;
+            document.getElementById('btnDeleteRow').style.display = 'block';
             document.getElementById('editModal').classList.add('active');
         }
 
@@ -295,15 +368,58 @@
         }
 
         function saveEditLog() {
-            if (editingIndex === null) return;
+            const dateVal = document.getElementById('editDateInput').value;
+            if (!dateVal) {
+                alert('ရက်စွဲ ရွေးချယ်ပေးပါ။');
+                return;
+            }
+
             const newDay = parseFloat(document.getElementById('editDayInput').value);
             const newOt = parseFloat(document.getElementById('editOtInput').value);
+            const safeDay = isNaN(newDay) ? 0 : newDay;
+            const safeOt = isNaN(newOt) ? 0 : newOt;
 
-            historyLogs[editingIndex].day = isNaN(newDay) ? 0 : newDay;
-            historyLogs[editingIndex].ot = isNaN(newOt) ? 0 : newOt;
+            if (editingIndex !== null) {
+                historyLogs[editingIndex].day = safeDay;
+                historyLogs[editingIndex].ot = safeOt;
+                localStorage.setItem(storageKey, JSON.stringify(historyLogs));
+                updateDisplay();
+                closeEditModal();
+                return;
+            }
 
-            localStorage.setItem(storageKey, JSON.stringify(historyLogs));
-            updateDisplay();
+            const parts = dateVal.split('-');
+            const targetKey = 'historyLogs_' + Number(parts[0]) + '_' + Number(parts[1]);
+            let targetLogs = (targetKey === storageKey)
+                ? historyLogs
+                : (JSON.parse(localStorage.getItem(targetKey)) |
+
+| []);
+
+            let existing = null;
+            for (let i = 0; i < targetLogs.length; i++) {
+                if (targetLogs[i].date === dateVal) {
+                    existing = targetLogs[i];
+                    break;
+                }
+            }
+
+            if (existing) {
+                existing.day = safeDay;
+                existing.ot = safeOt;
+            } else {
+                targetLogs.push({ date: dateVal, day: safeDay, ot: safeOt });
+            }
+
+            targetLogs.sort((a, b) => b.date.localeCompare(a.date));
+            localStorage.setItem(targetKey, JSON.stringify(targetLogs));
+
+            if (targetKey === storageKey) {
+                historyLogs = targetLogs;
+                updateDisplay();
+            } else {
+                alert(Number(parts[0]) + ' ခုနှစ်၊ ' + Number(parts[1]) + ' လပိုင်း စာရင်းထဲသို့ သိမ်းဆည်းပြီးပါပြီ။');
+            }
             closeEditModal();
         }
 
@@ -317,45 +433,65 @@
             }
         }
 
+        function exportBackup() {
+            const backupData = {};
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.startsWith('historyLogs_')) {
+                    backupData[k] = JSON.parse(localStorage.getItem(k));
+                }
+            }
+            const blob = new Blob([JSON.stringify(backupData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'ot-tracker-backup-' + todayStr + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function triggerImport() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (typeof imported !== 'object' |
+
+| imported === null) throw new Error('Invalid');
+                    let count = 0;
+                    Object.keys(imported).forEach((k) => {
+                        if (k.startsWith('historyLogs_') && Array.isArray(imported[k])) {
+                            localStorage.setItem(k, JSON.stringify(imported[k]));
+                            count++;
+                        }
+                    });
+                    if (count === 0) {
+                        alert('OT စာရင်း Backup ဖိုင် မှန်ကန်မှု မရှိပါ။');
+                        return;
+                    }
+                    historyLogs = JSON.parse(localStorage.getItem(storageKey)) |
+
+| [];
+                    updateDisplay();
+                    alert('Backup စာရင်းများ ပြန်လည်ထည့်သွင်းပြီးပါပြီ။');
+                } catch (err) {
+                    alert('ဖိုင်ဖတ်ရာတွင် အမှားရှိနေပါသည်။');
+                }
+            };
+            reader.readAsText(file);
+            event.target.value = '';
+        }
+
         function resetData() {
             if(confirm("ယခုလ စာရင်းအားလုံးကို ဖျက်မှာ သေချာပါသလား?")) {
                 localStorage.removeItem(storageKey);
                 historyLogs = [];
                 updateDisplay();
             }
-        }
-
-        // In-app Install Prompt
-        let deferredPrompt = null;
-        const installAppBtn = document.getElementById('installAppBtn');
-
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installAppBtn.style.display = 'block';
-        });
-
-        installAppBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
-            deferredPrompt.prompt();
-            await deferredPrompt.userChoice;
-            deferredPrompt = null;
-            installAppBtn.style.display = 'none';
-        });
-
-        window.addEventListener('appinstalled', () => {
-            installAppBtn.style.display = 'none';
-            deferredPrompt = null;
-        });
-    </script>
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('./sw.js');
-        });
-      }
-    </script>
-
-</body>
-</html>
-
+     
